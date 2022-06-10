@@ -1,0 +1,63 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% block 'title' %}
+        <title>Title</title>
+    {% endblock %}
+    <link rel="stylesheet" href="{% static 'css/books.css' %}">
+</head>
+<body>
+
+<header>
+    <img src="{% static 'img/books_page/logo.png' %}" alt="" class="logo">
+    <div class="pages">
+        <a href="">HOME</a>
+        <a href="">ABOUT SITE</a>
+        <a href="">POPULAR</a>
+        <a href="">BOOKS</a>
+        <a href="">PROFILE</a>
+
+    </div>
+</header>
+
+<div class="content">
+    <div id="search" class="search">
+        <input type="search" placeholder="              BOOK SEARCH FOR GOOD MOOD">
+        <img src="{% static 'img/books_page/search_ico.png' %}" alt="">
+    </div>
+    <div id="box">
+
+    </div>
+    {{ books_json|json_script:'books-json' }}
+    {% block content %}
+
+    {% endblock %}
+</div>
+<script>
+    {#const date = "{{books_json}}"#}
+    {# TODO Поиск доделать дизайн (ВСЁ ОСТАЛЬНОЕ РЕАЛИЗОВАНО) #}
+    const parse_date = JSON.parse(JSON.parse((document.getElementById('books-json').textContent)))
+    const input = document.getElementById('search')
+
+    let filteredArr = []
+    input.addEventListener('keyup', (e) => {
+        box.innerHTML = ""
+        filteredArr = parse_date.filter(book => book['name'].includes(e.target.value))
+        if (filteredArr.length > 0) {
+            filteredArr.map(item => {
+                let url = "{% url 'book' 0 %}".replace('0', item['id'])
+                box.innerHTML += `<a href="${url}"><b>${item['name']}<b></a><br>`
+            })
+        } else {
+            box.innerHTML = "<b> No result </b>"
+        }
+        if (e.target.value == '') {
+            box.innerHTML = ""
+        }
+    })
+</script>
+
+</body>
+</html>

@@ -1,0 +1,18 @@
+{% extends "auth/base_auth_template.html" %}
+{% block authform %}
+<form action="{% url 'registration' %}", method="post">
+    {% csrf_token %}
+    <div class="auth-form">
+        <h2>sign up</h2>
+        <hr>
+        {{ form.username }}
+        <hr>
+        {{ form.email }}
+        <hr>
+        {{ form.password }}
+        <hr>
+        {{ form.confirm_password }}
+        <input type="submit" value="sign up">
+    </div>
+</form>
+{% endblock %}

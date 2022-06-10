@@ -1,0 +1,79 @@
+{% extends 'books/base_bookspage_template.html' %}
+{% block content %}
+
+
+
+
+    <div class="book-info">
+        <div class="rating-area">
+
+            <input onclick="send_rate(this)" type="radio" id="star-5" name="rating" value="5">
+
+            <label for="star-5" title="Оценка «5»"></label>
+
+            <input onclick="send_rate(this)" type="radio" id="star-4" name="rating" value="4">
+
+            <label for="star-4" title="Оценка «4»"></label>
+
+            <input onclick="send_rate(this)" type="radio" id="star-3" name="rating" value="3">
+
+            <label for="star-3" title="Оценка «3»"></label>
+
+            <input onclick="send_rate(this)" type="radio" id="star-2" name="rating" value="2">
+
+            <label for="star-2" title="Оценка «2»"></label>
+
+            <input onclick="send_rate(this)" type="radio" id="star-1" name="rating" value="1">
+
+            <label for="star-1" title="Оценка «1»"></label>
+        </div>
+
+        <img src="{{ book.cover.url }}" alt="">
+        <div class="book-content">
+            <div class="book-name">
+                <h1>{{ book.name }}</h1>
+            </div>
+            <div class="book-description">
+                <p>{{ book.description }} </p>
+
+
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        const rate_label = document.querySelectorAll("label")
+        {% if rate %}
+            for (let i = 4; i >= 5 - {{ rate.rate }}; i--) {
+                rate_label[i].style = 'color:gold;'
+            }
+        {% endif %}
+
+        function send_rate(object) {
+            for (let i = 4; i >= 0; i--) {
+                rate_label[i].style = 'color:lightgrey;'
+            }
+            for (let i = 4; i >= 5 - object.value; i--) {
+                rate_label[i].style = 'color:gold;'
+            }
+            $.ajax({
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    'rate': object.value,
+                    'book_pk': {{ object.pk }},
+                },
+                type: 'post',
+                url: "{% url 'test' %}",
+
+                success: function (response) {
+                },
+                error: function (response){
+                    }
+                // если ошибка, то
+
+            });
+        }
+    </script>
+{% endblock %}

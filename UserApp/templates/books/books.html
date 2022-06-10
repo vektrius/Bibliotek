@@ -1,0 +1,24 @@
+{% extends "books/base_bookspage_template.html" %}
+{% load math_tags %}
+
+{% block content %}
+    <div class="books">
+        {% for book in books %}
+            <div class="book">
+                {% if forloop.counter|mod:10 <= 5 and forloop.counter|mod:10 >= 1 %}
+                    <img style="" src="{{ book.cover.url }}" alt="" class="cover">
+                    <div class="name_first_transform">
+                        <p><a href="{% url 'book' book.pk %}">{{ book.name }}</a></p>
+                    </div>
+                {% else %}
+                    <img style="position: relative;left: -1.3vw;" src="{{ book.cover.url }}" alt="" class="cover">
+                    <div class="name_second_transform">
+                        <p><a href="{% url 'book' book.pk %}">{{ book.name }}</a></p>
+                    </div>
+                {% endif %}
+            </div>
+        {% endfor %}
+    </div>
+
+
+{% endblock %}

@@ -1,0 +1,61 @@
+from django.contrib.auth.models import User
+from django.core.validators import MaxValueValidator, MinValueValidator
+from django.db import models
+
+
+# Create your models here.
+class Account(models.Model):
+    # Разобраться с профилем придумать идеи
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    avatar = models.ImageField(upload_to='account/avatar', verbose_name='Фото профиля')
+    list_read_book = models.ManyToManyField('Book', verbose_name='Прочитанные книги')
+
+    def __str__(self):
+        return self.user.username
+
+
+class Genre(models.Model):
+    genre_choices = (
+        ("Детектив", "Детектив"),
+        ("Фантастика", "Фантастика"),
+        ("Приключения", "Приключения"),
+        ("Роман", "Роман"),
+        ("Научная книга", "Научная книга"),
+        ("Фольклор", "Фольклор"),
+        ("Юмор", "Юмор"),
+        ("Справочная книга", "Справочная книга"),
+        ("Поэзия", "Поэзия"),
+        ("Детская книга", "Детская книга"),
+        ("Документальная литература", "Документальная литература"),
+        ("Деловая литература", "Деловая литература"),
+        ("Религиозная литература", "Религиозная литература"),
+        ("Учебная книга", "Учебная книга"),
+        ("Книги о психологии", "Книги о психологии"),
+        ("Хобби", "Хобби"),
+        ("Зарубежная", "Зарубежная"),
+        ("Техника", "Техника"),
+    )
+    name = models.CharField(max_length=40, choices=genre_choices, verbose_name='Жанр')
+
+
+class Rate(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE, verbose_name='Пользователь')
+    rate = models.IntegerField(default=0, verbose_name='Оценка',validators=[MinValueValidator(0),MaxValueValidator(5)])
+    book = models.ForeignKey('Book', on_delete=models.CASCADE, verbose_name='Книга', related_name='rates')
+
+    class Meta:
+        unique_together = ('account', 'book',)
+
+    def __str__(self):
+        return f"{self.account.user.username} оценил {self.book.name} на {self.rate}"
+
+class Book(models.Model):
+    name = models.CharField(max_length=40, verbose_name='Название книги')
+    author = models.CharField(max_length=40, verbose_name='Автор')
+    genres = models.ManyToManyField(Genre, related_name='books')
+    description = models.TextField(verbose_name='Описание')
+    cover = models.ImageField(upload_to='books/cover', verbose_name='Обложка книги')
+    file = models.FileField(upload_to='books/text_files/', verbose_name='Файл книги')
+
+    def __str__(self):
+        return f"{self.author} - {self.name}"

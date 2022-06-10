@@ -1,0 +1,112 @@
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    position: relative;
+
+    width: 100vw;
+    height: 100vh;
+    background: linear-gradient(0deg, rgba(90, 89, 173, 0.91), rgba(90, 89, 173, 0.91)), rgba(161, 165, 202, 0.91);
+    box-shadow: inset 250px 100px 200px 110px rgba(0, 0, 0, 0.4);
+
+}
+
+.img1 {
+    position: fixed;
+    width: 30.98vw;
+    height: 51.018vh;
+    left: -3.02vw;
+    top: 53.425vh;
+    z-index: 2500;
+}
+
+.img2 {
+    position: fixed;
+    width: 22.8vw;
+    height: 34.35vh;
+    left: 4.8vw;
+    top: 29.1vh;
+    opacity: 85%;
+    z-index: 3000;
+    border-radius: 157px;
+}
+
+.img3 {
+    position: absolute;
+    width: 29.375%;
+    height: 41.666%;
+    left: 16.3vw;
+    top: 39.07vh;
+
+    border-radius: 20px;
+}
+
+form {
+    width: 32.03125vw;
+    height: 67.1vh;
+    position: absolute;
+    left: 35%;
+    top: 20.5vh;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    background: rgba(196, 196, 196, 0.15);
+}
+
+.auth-form form {
+    height: 100%;
+}
+
+.auth-form h2 {
+    color: white;
+    font-family: 'Voces', cursive;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 64px;
+    line-height: 86px;
+}
+
+hr {
+    margin-bottom: 2.89%;
+    margin-top: 4.5%;
+    width: 69.75%;
+    border: 0.8px solid;
+    color: #000000;
+}
+
+.auth-form input {
+    width: 69.75%;
+    height: 8.9%;
+    font-size: 30px;
+    border: 0px solid;
+    background-color: rgb(196, 196, 196, 0.2);
+    color: black;
+}
+
+.auth-form input::placeholder {
+    color: #FFFFFF;
+    opacity: 0.5;
+
+}
+
+.auth-form input:last-child {
+    width: 41.3%;
+    margin-top: 5.1%;
+    color: black;
+    opacity: 1;
+    background-color: rgba(193, 182, 212, 0.76);
+}
+
+
+.link {
+    color: pink;
+}
+
