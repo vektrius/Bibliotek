@@ -1,7 +1,7 @@
 import json
 
 from django import views
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
@@ -11,23 +11,24 @@ from django.views.generic import ListView, DetailView
 from .forms import RegistrationForm, LoginForm
 
 # Create your views here.
-from .mixins import BooksListMixin
+from .mixins import BooksJsonContextMixin
 from .models import Book, Rate, Account
+
 
 def is_ajax(request):
     return request.headers.get('x-requested-with') == 'XMLHttpRequest'
+
 
 def check_authenticated(func):
     def check(self, request, *args, **kwargs):
         if request.user.is_authenticated:
             return HttpResponseRedirect(reverse('books'))
-        func(self, request, *args, **kwargs)
+        return func(self, request, *args, **kwargs)
 
     return check
 
 
-def getModelJsonData(model):
-    return json.dumps(list(model.objects.values()))
+
 
 
 class RegistrationView(views.View):
@@ -42,12 +43,13 @@ class RegistrationView(views.View):
 
         if form.is_valid():
             # Добавить апкаст юзера
-            login(request, User.objects.create(username=form.cleaned_data['username'],
-                                               password=form.cleaned_data['password'],
-                                               email=form.cleaned_data['email']))
+            user = User.objects.create_user(username=form.cleaned_data['username'],
+                                            password=form.cleaned_data['password'],
+                                            email=form.cleaned_data['email'])
 
+            login(request, user)
+            Account.objects.create(user=user)
         return HttpResponseRedirect(reverse('registration'))  # Edit
-
 
 
 class LoginView(views.View):
@@ -62,13 +64,13 @@ class LoginView(views.View):
 
         if form.is_valid():
             # Добавить апкаст юзера
-            login(request, User.objects.get(username=form.cleaned_data['username'],
-                                            password=form.cleaned_data['password']))
-
+            user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password'])
+            login(request, user)
+            return HttpResponseRedirect(reverse('books'))
         return render(request, 'auth/login.html', {'form': form})
 
 
-class BookInfoView(BooksListMixin, DetailView):
+class BookInfoView(BooksJsonContextMixin, DetailView):
     model = Book
     context_object_name = 'book'
     template_name = "books/book_info.html"
@@ -79,17 +81,16 @@ class BookInfoView(BooksListMixin, DetailView):
         return context
 
 
-class BooksView(BooksListMixin, ListView):
+class BooksView(BooksJsonContextMixin, ListView):
     model = Book
     template_name = 'books/books.html'
     context_object_name = 'books'
 
 
 def rate_system_view(request):
-
     if request.method == "POST" and is_ajax(request):
 
-        book = Book.objects.get(pk = int(request.POST['book_pk']))
+        book = Book.objects.get(pk=int(request.POST['book_pk']))
         account = Account.objects.get(user=request.user)
         current_rate = book.rates.filter(account=account).first()
         rate = int(request.POST["rate"])

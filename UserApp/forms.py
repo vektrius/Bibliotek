@@ -1,4 +1,5 @@
 from django import forms
+from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
@@ -21,7 +22,7 @@ class LoginForm(forms.Form):
     def clean(self):
         user = User.objects.filter(username=self.cleaned_data['username']).first()
         if user:
-            if not user.password == self.cleaned_data['password']:
+            if not authenticate(username=self.cleaned_data['username'], password=self.cleaned_data['password']):
                 self.add_error('password', ValidationError('Неверный пароль!'))
         else:
             self.add_error('username', ValidationError('Неверный логин!'))

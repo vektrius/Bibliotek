@@ -1,12 +1,15 @@
 import json
 
-
 from UserApp.models import Book
 
 
-class BooksListMixin:
-    def get_context_data(self,**kwargs):
-        context = super(BooksListMixin, self).get_context_data(**kwargs)
+def GetModelJsonData(model):
+    return json.dumps(list(model.objects.values()))
 
-        context['books_json'] = json.dumps(list(Book.objects.all().values()))
+
+class BooksJsonContextMixin:
+    def get_context_data(self, **kwargs):
+        context = super(BooksJsonContextMixin, self).get_context_data(**kwargs)
+
+        context['books_json'] = GetModelJsonData(Book)
         return context

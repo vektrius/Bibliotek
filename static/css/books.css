@@ -62,7 +62,7 @@ input[type="search"]::placeholder {
 
 .pages a {
     display: inline-block;
-    margin-left: 13%;
+    margin-left: 10%;
     margin-top: 0.3vh;
     padding-bottom: 10px;
     font-size: 3vh;

@@ -15,7 +15,8 @@ Including another URLconf
 """
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path
+from django.contrib.auth.views import LogoutView
+from django.urls import path, reverse
 
 from Bibliotek import settings
 from UserApp.views import RegistrationView, LoginView, BooksView, BookInfoView, rate_system_view
@@ -28,5 +29,6 @@ urlpatterns = [
                   path('login/', LoginView.as_view(), name='login'),
                   path('books/', BooksView.as_view(), name='books'),
                   path('book/<int:pk>', BookInfoView.as_view(), name='book'),
-                  path('test/', rate_system_view, name='test')
+                  path('test/', rate_system_view, name='test'),
+                  path('logout/',LogoutView.as_view(next_page='/'),name='logout')
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
