@@ -26,15 +26,17 @@
     <div id="search" class="search">
         <input type="search" placeholder="              BOOK SEARCH FOR GOOD MOOD">
         <img src="{% static 'img/books_page/search_ico.png' %}" alt="">
-    </div>
-    <div id="box">
+
 
     </div>
-    {{ books_json|json_script:'books-json' }}
+    <div id='search_box' class="search-content">
+    </div>
+    {{ books_json|json_script:'books-json' }} {#  book_json for js #}
     {% block content %}
 
     {% endblock %}
 </div>
+
 <script>
     {#const date = "{{books_json}}"#}
     {# TODO Поиск доделать дизайн (ВСЁ ОСТАЛЬНОЕ РЕАЛИЗОВАНО) #}
@@ -43,18 +45,29 @@
 
     let filteredArr = []
     input.addEventListener('keyup', (e) => {
-        box.innerHTML = ""
+        search_box.innerHTML = ""
         filteredArr = parse_date.filter(book => book['name'].includes(e.target.value))
         if (filteredArr.length > 0) {
             filteredArr.map(item => {
                 let url = "{% url 'book' 0 %}".replace('0', item['id'])
-                box.innerHTML += `<a href="${url}"><b>${item['name']}<b></a><br>`
+                search_box.innerHTML += `
+                <div class="search-content-item" onclick="location.href='${url}'">
+                    <img style="margin: 5px;" src="/media/${item['cover']}" alt="" class="search-cover-item">
+                    <div class="search-description-item">
+                        <p class="search-name-item">
+                            ${item['name']}
+                        </p>
+                        <p class="search-text-item">
+                            ${item['description']}
+                        </p>
+                    </div>
+                </div>`
             })
         } else {
-            box.innerHTML = "<b> No result </b>"
+            search_box.innerHTML = "<b> No result </b>"
         }
         if (e.target.value == '') {
-            box.innerHTML = ""
+            search_box.innerHTML = ""
         }
     })
 </script>

@@ -8,7 +8,7 @@ class Account(models.Model):
     # Разобраться с профилем придумать идеи
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     avatar = models.ImageField(upload_to='account/avatar', verbose_name='Фото профиля')
-    list_read_book = models.ManyToManyField('Book', verbose_name='Прочитанные книги')
+    list_read_book = models.ManyToManyField('Book', verbose_name='Прочитанные книги',blank=True)
 
     def __str__(self):
         return self.user.username

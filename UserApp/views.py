@@ -5,6 +5,7 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
+from django.templatetags.static import static
 from django.urls import reverse
 from django.views.generic import ListView, DetailView
 
@@ -103,3 +104,21 @@ def rate_system_view(request):
                                             book=book)
             rate_book.save()
     return JsonResponse({}, status=200)
+
+def add_to_reads_books(request):
+    if request.method == "POST" and is_ajax(request):
+        book = Book.objects.get(pk=request.POST['book_id'])
+        account = Account.objects.get(user=request.user)
+        if book in account.list_read_book.all():
+            account.list_read_book.remove(book)
+            icon_added_img_url = static('img/books_page/bookmark.png')
+        else:
+            account.list_read_book.add(book)
+            icon_added_img_url = static('img/books_page/notebook.png')
+        return JsonResponse({'icon_url' : icon_added_img_url},status=200)
+        #TODO доделать добавление в прочитанное
+
+
+class ProfileView(views.View):
+    def get(self,request):
+        return render(request,'profile/profile.html',{})

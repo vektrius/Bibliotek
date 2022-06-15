@@ -1,34 +1,44 @@
 {% extends 'books/base_bookspage_template.html' %}
 {% block content %}
+    {% load static %}
+    {% load check_tags %}
 
 
+    <div class="book-info" >
 
 
-    <div class="book-info">
-        <div class="rating-area">
+        <div>
+            <img class="book-cover" src="{{ book.cover.url }}" alt="">
+            <div class="cover-content">
+                <div class="rating-area">
 
-            <input onclick="send_rate(this)" type="radio" id="star-5" name="rating" value="5">
+                    <input onclick="send_rate(this)" type="radio" id="star-5" name="rating" value="5">
 
-            <label for="star-5" title="Оценка «5»"></label>
+                    <label for="star-5" title="Оценка «5»"></label>
+                    <input onclick="send_rate(this)" type="radio" id="star-4" name="rating" value="4">
 
-            <input onclick="send_rate(this)" type="radio" id="star-4" name="rating" value="4">
+                    <label for="star-4" title="Оценка «4»"></label>
+                    <input onclick="send_rate(this)" type="radio" id="star-3" name="rating" value="3">
 
-            <label for="star-4" title="Оценка «4»"></label>
+                    <label for="star-3" title="Оценка «3»"></label>
+                    <input onclick="send_rate(this)" type="radio" id="star-2" name="rating" value="2">
 
-            <input onclick="send_rate(this)" type="radio" id="star-3" name="rating" value="3">
+                    <label for="star-2" title="Оценка «2»"></label>
+                    <input onclick="send_rate(this)" type="radio" id="star-1" name="rating" value="1">
 
-            <label for="star-3" title="Оценка «3»"></label>
+                    <label for="star-1" title="Оценка «1»"></label>
+                </div>
+                {% if request.user|BookInReadListUser:book %}
+                    <input type="image" onclick="AddToReadsBooks(this)" src="{% static 'img/books_page/notebook.png' %}"
+                           alt="Добавить в прочитанное»">
 
-            <input onclick="send_rate(this)" type="radio" id="star-2" name="rating" value="2">
-
-            <label for="star-2" title="Оценка «2»"></label>
-
-            <input onclick="send_rate(this)" type="radio" id="star-1" name="rating" value="1">
-
-            <label for="star-1" title="Оценка «1»"></label>
+                {% else %}
+                    <input type="image" onclick="AddToReadsBooks(this)" src="{% static 'img/books_page/bookmark.png' %}"
+                           alt="Добавить в прочитанное»">
+                {% endif %}
+            </div>
         </div>
 
-        <img src="{{ book.cover.url }}" alt="">
         <div class="book-content">
             <div class="book-name">
                 <h1>{{ book.name }}</h1>
@@ -62,18 +72,32 @@
                 data: {
                     csrfmiddlewaretoken: '{{ csrf_token }}',
                     'rate': object.value,
-                    'book_pk': {{ object.pk }},
+                    'book_pk': {{ book.pk }},
                 },
                 type: 'post',
-                url: "{% url 'test' %}",
+                url: "{% url 'set-rate' %}",
 
                 success: function (response) {
                 },
-                error: function (response){
-                    }
+                error: function (response) {
+                }
                 // если ошибка, то
 
             });
+        }
+
+        function AddToReadsBooks(object) {
+            $.ajax({
+                data: {
+                    csrfmiddlewaretoken: '{{ csrf_token }}',
+                    'book_id': {{ book.pk }}
+                },
+                type: 'post',
+                url: "{% url 'add-to-reads-books' %}",
+                success: function (response) {
+                    object.src = response['icon_url']
+                }
+            })
         }
     </script>
 {% endblock %}
