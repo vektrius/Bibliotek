@@ -3,6 +3,7 @@ import json
 from django import views
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
+from django.core.paginator import Paginator
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.templatetags.static import static
@@ -27,9 +28,6 @@ def check_authenticated(func):
         return func(self, request, *args, **kwargs)
 
     return check
-
-
-
 
 
 class RegistrationView(views.View):
@@ -105,6 +103,7 @@ def rate_system_view(request):
             rate_book.save()
     return JsonResponse({}, status=200)
 
+
 def add_to_reads_books(request):
     if request.method == "POST" and is_ajax(request):
         book = Book.objects.get(pk=request.POST['book_id'])
@@ -115,10 +114,24 @@ def add_to_reads_books(request):
         else:
             account.list_read_book.add(book)
             icon_added_img_url = static('img/books_page/notebook.png')
-        return JsonResponse({'icon_url' : icon_added_img_url},status=200)
-        #TODO доделать добавление в прочитанное
+        return JsonResponse({'icon_url': icon_added_img_url}, status=200)
 
 
 class ProfileView(views.View):
-    def get(self,request):
-        return render(request,'profile/profile.html',{})
+    def get(self, request):
+        account = Account.objects.get(user=request.user)
+        book_paginator = Paginator(account.list_read_book.all(), 12)
+        page = book_paginator.get_page(1)
+
+        context = {'account': account,
+                   'page': page,
+                   'paginator': book_paginator}
+        return render(request, 'profile/profile.html', context)
+
+
+def next_page_paginator(request, page_number):
+    if request.method == "GET":
+        account = Account.objects.get(user=request.user)
+        book_paginator = Paginator(account.list_read_book.all(), 12)
+        page = book_paginator.get_page(page_number)
+        return JsonResponse({'books': json.dumps(list(page.object_list.values()))}, status=200)

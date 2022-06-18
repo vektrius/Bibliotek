@@ -1,10 +1,108 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "books/base_bookspage_template.html" %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+{% block search %}
+{% endblock %}
+{% block content %}
+    <div class="profile">
+        <div class="left-bar">
+            <div class="profile-avatar">
+                <img src="{{ account.avatar.url }}">
+                <button>редактировать</button>
+            </div>
+            <div class="cover-favorite-book">
+                <img src="{{ account.favorite_book.cover.url }}" alt="">
+            </div>
+        </div>
+        <div class="right-bar">
+            <div class="status">
+                <div class="status-text">
+                    {{ account.status }}
+                </div>
+                <img src="" alt="">
+            </div>
+            <div class="profile-description">
+                <div class="main-info">
+                    <p class="nickname">{{ account.user.username }}</p>
+                    <div>
+                        <p class="age">{{ account.age }}</p>
+                        <p class="region">{{ account.region }}</p>
+                        <p class="sex">{{ account.sex }}</p>
+                    </div>
+                    <p class="about-me">{{ account.about_me }}</p>
+                </div>
+                <div class="favorite-ganre">
+                    <p>{% for genre in account.likes_genre.all %}
+                        {{ genre.name }}
+                    {% endfor %}
+                    </p>
+                </div>
+            </div>
+            <div class="gallery">
+                <h2 style="">галлерея книг</h2>
+                <div class="read-cover-books">
+                    {% for books in page.object_list %}
+                        <img src="{{ books.cover.url }}" alt="">
+                    {% endfor %}
 
-</body>
-</html>
+                </div>
+
+                <p onclick="PaginateNextBooks()"
+                   style="margin-bottom:18px;width: 400px;height: 31px;background: rgba(161, 165, 202, 0.5);">></p>
+                <p onclick="PaginatePreviousBooks()"
+                   style="margin-bottom:18px;width: 400px;height: 31px;background: rgba(161, 165, 202, 0.5);"><</p>
+            </div>
+        </div>
+    </div>
+    {% block scripts %}
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script>
+            var page_number = {{ page.number }}
+                function PaginateNextBooks() {
+                    if (page_number < {{ paginator.num_pages }}) {
+                        page_number += 1
+                        $.ajax({
+                            data: {},
+                            type: 'get',
+                            url: "{% url 'next_page_paginator' 3 %}".replace('3', page_number),
+                            success: function (response) {
+                                box = document.querySelector(".read-cover-books")
+                                books = JSON.parse(response["books"])
+                                add_book_in_box(box, books)
+                            }
+                        })
+                    }
+
+                }
+
+            function PaginatePreviousBooks() {
+                if (page_number > 1) {
+                    page_number -= 1
+                    $.ajax({
+                        data: {},
+                        type: 'get',
+                        url: "{% url 'next_page_paginator' 3 %}".replace('3', page_number),
+                        success: function (response) {
+                            box = document.querySelector(".read-cover-books")
+                            books = JSON.parse(response["books"])
+                            add_book_in_box(box, books)
+                        }
+                    })
+                }
+
+            }
+
+            function add_book_in_box(box, books) {
+                box.innerHTML = ''
+                books.map(item => {
+                    box.innerHTML += `
+                        <img src="/media/${item['cover']}" alt="">
+                    `
+                })
+
+            }
+        </script>
+    {% endblock %}
+{% endblock %}

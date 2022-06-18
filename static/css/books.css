@@ -239,17 +239,19 @@ input[type="image"] {
     background-color: #807272;
     margin-top: 5px;
     overflow-y: scroll;
-    overflow-x:hidden;
+    overflow-x: hidden;
 }
-.search-content-item
-{
-display: flex;
+
+.search-content-item {
+    display: flex;
     flex-direction: row;
 }
+
 .search-cover-item {
     width: 6.25vw;
     height: 12vh;
 }
+
 .cover-content {
     display: flex;
     flex-direction: row;
