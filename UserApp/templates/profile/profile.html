@@ -3,14 +3,30 @@
 {% block css %}
     <link rel="stylesheet" href="{% static 'css/profile.css' %}">
 {% endblock %}
+
 {% block search %}
+
 {% endblock %}
+
+{% block filter %}
+
+{% endblock %}
+
 {% block content %}
     <div class="profile">
         <div class="left-bar">
             <div class="profile-avatar">
+
+                <form class='avatar-form' action="{% url 'edit-avatar' %}" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label for="edit-photo">
+                        <img src="{% static 'img/profile/photo-change.png' %}" style="width: 128px;height: 128px;"/>
+                    </label>
+                    <input name="avatar" id='edit-photo' type="file" accept="image/png" onchange="this.form.submit()">
+                </form>
                 <img src="{{ account.avatar.url }}">
-                <button>редактировать</button>
+
+                <button onclick="location.href = {% url 'edit-profile' %}">редактировать</button>
             </div>
             <div class="cover-favorite-book">
                 <img src="{{ account.favorite_book.cover.url }}" alt="">

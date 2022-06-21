@@ -4,17 +4,18 @@ from django import views
 from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import User
 from django.core.paginator import Paginator
+from django.db.models import Avg
 from django.http import HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.templatetags.static import static
 from django.urls import reverse
 from django.views.generic import ListView, DetailView
 
-from .forms import RegistrationForm, LoginForm
+from .forms import RegistrationForm, LoginForm, EditProfileForm
 
 # Create your views here.
 from .mixins import BooksJsonContextMixin
-from .models import Book, Rate, Account
+from .models import Book, Rate, Account, Genre
 
 
 def is_ajax(request):
@@ -77,6 +78,8 @@ class BookInfoView(BooksJsonContextMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super(BookInfoView, self).get_context_data(**kwargs)
         context['rate'] = self.object.rates.filter(account__user=self.request.user).first()
+        context['avg_rate'] = self.object.rates.all().aggregate(Avg('rate'))['rate__avg']
+        print(context['avg_rate'])
         return context
 
 
@@ -135,3 +138,70 @@ def next_page_paginator(request, page_number):
         book_paginator = Paginator(account.list_read_book.all(), 12)
         page = book_paginator.get_page(page_number)
         return JsonResponse({'books': json.dumps(list(page.object_list.values()))}, status=200)
+
+
+class EditProfileView(views.View):
+    def get(self, request):
+        account = Account.objects.get(user=request.user)
+        data = {
+            'name': account.user.username,
+            'age': account.age,
+            'sex': account.get_sex_display(),
+            'region': account.region,
+            'likes_genre': account.likes_genre.all(),
+            'about_me': account.about_me,
+            'user' : account.user
+        }
+        form = EditProfileForm(data=data)
+
+        return render(request, 'profile/edit_profile.html', {'form': form})
+
+    def post(self,request):
+        user = request.user
+        account = Account.objects.get(user=user)
+        form = EditProfileForm(request.POST)
+        if form.is_valid():
+            user.username = form.cleaned_data['name']
+            user.save()
+            account.age = form.cleaned_data['age']
+            account.sex = form.cleaned_data['sex']
+            account.region = form.cleaned_data['region']
+            account.likes_genre.set(form.cleaned_data['likes_genre'])   
+            account.about_me = form.cleaned_data['about_me']
+            account.save()
+            return HttpResponseRedirect(reverse('edit-profile'))
+        else:
+            return render(request, 'profile/edit_profile.html', {'form': form})
+
+class FilterView(BooksJsonContextMixin,views.View):
+    def get(self,request):
+        genre_name_list = list(request.GET.values())
+        genres = list(Genre.objects.filter(name__in = genre_name_list))
+        books = list(Book.objects.all())
+        books = filter(lambda book : list(book.genres.all() ) == genres,books)
+        print(list(books))
+        return render(request,'books/books.html')
+
+
+class FilterView(BooksJsonContextMixin, ListView):
+    model = Book
+    template_name = 'books/books.html'
+    context_object_name = 'books'
+
+    def get_context_data(self, **kwargs):
+        context = super(FilterView, self).get_context_data(**kwargs)
+        genre_name_list = list(self.request.GET.values())
+        genres = list(Genre.objects.filter(name__in=genre_name_list))
+        books = list(Book.objects.all())
+        books = filter(lambda book: list(book.genres.all()) == genres, books)
+        context['books'] = list(books)
+        if len(self.request.GET) == 0:
+           context['books'] = Book.objects.all()
+        return context
+
+def edit_avatar(request):
+    if request.method == 'POST':
+        account = Account.objects.get(user = request.user)
+        account.avatar = request.FILES['avatar']
+        account.save()
+    return HttpResponseRedirect(reverse('profile'))

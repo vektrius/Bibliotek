@@ -9,6 +9,7 @@
     {% block css %}
 
     {% endblock %}
+    <link rel="stylesheet" href="{% static 'css/nav.css' %}">
     <link rel="stylesheet" href="{% static 'css/books.css' %}">
 </head>
 <body>
@@ -24,36 +25,58 @@
 
     </div>
 </header>
+{% block filter %}
+<input type="checkbox" id="nav-toggle" hidden>
+<div class="nav">
+    <label for="nav-toggle" class="nav-toggle" onclick></label>
+    <h2 class="logo">
+        <p>Фильтрация</p>
+    </h2>
+    <form action="{% url 'filter' %}" method="get">
+        {% for genre in genre_choices %}
+            <div>
 
+                <input type="checkbox" name="{{ genre.1 }}" value="{{ genre.1 }}" id="genre{{ forloop.counter }}"/>
+                <label for="genre{{ forloop.counter }}">{{ genre.1 }}</label>
+            </div>
+
+        {% endfor %}
+
+        <input style="width: 150px; margin-top: 10px;" type="submit" value="фильтрация">
+    </form>
+
+
+</div>
+{% endblock %}
 <div class="content">
     {% block search %}
-    <div id="search" class="search">
-        <input type="search" placeholder="              BOOK SEARCH FOR GOOD MOOD">
-        <img src="{% static 'img/books_page/search_ico.png' %}" alt="">
+        <div id="search" class="search">
+            <input type="search" placeholder="              BOOK SEARCH FOR GOOD MOOD">
+            <img src="{% static 'img/books_page/search_ico.png' %}" alt="">
 
 
-    </div>
-    <div id='search_box' class="search-content">
-    </div>
-    {{ books_json|json_script:'books-json' }} {#  book_json for js #}
+        </div>
+        <div id='search_box' class="search-content">
+        </div>
+        {{ books_json|json_script:'books-json' }} {#  book_json for js #}
     {% endblock %}
     {% block content %}
 
     {% endblock %}
 </div>
 {% block scripts %}
-<script>
-    const parse_date = JSON.parse(JSON.parse((document.getElementById('books-json').textContent)))
-    const input = document.getElementById('search')
+    <script>
+        const parse_date = JSON.parse(JSON.parse((document.getElementById('books-json').textContent)))
+        const input = document.getElementById('search')
 
-    let filteredArr = []
-    input.addEventListener('keyup', (e) => {
-        search_box.innerHTML = ""
-        filteredArr = parse_date.filter(book => book['name'].includes(e.target.value))
-        if (filteredArr.length > 0) {
-            filteredArr.map(item => {
-                let url = "{% url 'book' 0 %}".replace('0', item['id'])
-                search_box.innerHTML += `
+        let filteredArr = []
+        input.addEventListener('keyup', (e) => {
+            search_box.innerHTML = ""
+            filteredArr = parse_date.filter(book => book['name'].includes(e.target.value))
+            if (filteredArr.length > 0) {
+                filteredArr.map(item => {
+                    let url = "{% url 'book' 0 %}".replace('0', item['id'])
+                    search_box.innerHTML += `
                 <div class="search-content-item" onclick="location.href='${url}'">
                     <img style="margin: 5px;" src="/media/${item['cover']}" alt="" class="search-cover-item">
                     <div class="search-description-item">
@@ -65,15 +88,15 @@
                         </p>
                     </div>
                 </div>`
-            })
-        } else {
-            search_box.innerHTML = "<b> No result </b>"
-        }
-        if (e.target.value == '') {
-            search_box.innerHTML = ""
-        }
-    })
-</script>
+                })
+            } else {
+                search_box.innerHTML = "<b> No result </b>"
+            }
+            if (e.target.value == '') {
+                search_box.innerHTML = ""
+            }
+        })
+    </script>
 {% endblock %}
 </body>
 </html>

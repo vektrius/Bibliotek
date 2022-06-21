@@ -3,6 +3,8 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 
+from UserApp.models import Account
+
 
 class RegistrationForm(forms.Form):
     username = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'placeholder': 'user name'}))
@@ -27,3 +29,15 @@ class LoginForm(forms.Form):
         else:
             self.add_error('username', ValidationError('Неверный логин!'))
         super(LoginForm, self).clean()
+
+
+class EditProfileForm(forms.ModelForm):
+    class Meta:
+        model = Account
+        fields = ['age', 'sex', 'region', 'likes_genre', 'about_me']
+
+        widgets = {
+            'about_me': forms.Textarea(attrs={}),
+        }
+    name = forms.CharField(max_length=50, label='Name')
+

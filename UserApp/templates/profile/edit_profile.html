@@ -1,0 +1,55 @@
+{% extends 'books/base_bookspage_template.html' %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+{% endblock %}
+{% block search %}
+{% endblock %}
+{% block filter %}
+{% endblock %}
+{% block content %}
+    <div class="edit-block">
+        <form action="{% url 'edit-profile' %}" method="post">
+            {% csrf_token %}
+
+            <div class="name-field">
+                {{ form.name.errors }}
+                <label for="{{ form.name.id_for_label }}">{{ form.name.label }}:</label>
+                {{ form.name }}
+            </div>
+            <div class="age-field">
+                {{ form.age.errors }}
+                <label for="{{ form.age.id_for_label }}">{{ form.age.label }}:</label>
+                {{ form.age }}
+            </div>
+            <div class="sex-field">
+                {{ form.sex.errors }}
+                <label for="{{ form.sex.id_for_label }}">{{ form.sex.label }}:</label>
+                {{ form.sex }}
+            </div>
+            <div class="region-field">
+                {{ form.region.errors }}
+                <label for="{{ form.region.id_for_label }}">{{ form.region.label }}:</label>
+                {{ form.region }}
+            </div>
+            <div class="likes_genre-field">
+                {{ form.likes_genre.errors }}
+                <label for="{{ form.likes_genre.id_for_label }}">{{ form.likes_genre.label }}:</label>
+                {{ form.likes_genre }}
+            </div>
+            <div class="about_me-field">
+                {{ form.about_me.errors }}
+                <label for="{{ form.about_me.id_for_label }}">{{ form.about_me.label }}:</label>
+                {{ form.about_me }}
+            </div>
+
+
+                {{ form.user.errors }}
+
+            {{ form.user.as_hidden }}
+            <input type="submit" value="go">
+        </form>
+    </div>
+
+{% endblock %}

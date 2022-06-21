@@ -20,7 +20,7 @@ from django.urls import path, reverse
 
 from Bibliotek import settings
 from UserApp.views import RegistrationView, LoginView, BooksView, BookInfoView, rate_system_view, add_to_reads_books, \
-    ProfileView, next_page_paginator
+    ProfileView, next_page_paginator, EditProfileView, FilterView, edit_avatar
 from django.views.generic import RedirectView
 
 urlpatterns = [
@@ -34,5 +34,8 @@ urlpatterns = [
                   path('logout/', LogoutView.as_view(next_page='/'), name='logout'),
                   path('add-to-reads-book/', add_to_reads_books, name='add-to-reads-books'),
                   path('profile/', ProfileView.as_view(), name='profile'),
-                  path('next-page-paginator/<int:page_number>', next_page_paginator, name='next_page_paginator')
+                  path('next-page-paginator/<int:page_number>', next_page_paginator, name='next_page_paginator'),
+                  path('edit-profile/',EditProfileView.as_view(),name='edit-profile'),
+                path('filter/', FilterView.as_view(),name='filter'),
+    path('edit-avatar/',edit_avatar,name='edit-avatar')
               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

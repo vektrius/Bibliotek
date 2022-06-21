@@ -4,6 +4,7 @@
 }
 
 .profile-avatar img {
+
     width: 327px;
     height: 349px;
 }
@@ -111,15 +112,17 @@
     width: 610px;
     height: 215px;
     background: rgba(161, 165, 202, 0.5);
-    margin:6px 16px 17px 0px;
+    margin: 6px 16px 17px 0px;
 }
+
 .gallery {
     width: 1300px;
     background: #D9D9D9;
     margin-top: 27px;
-     display: flex;
+    display: flex;
     flex-direction: column;
 }
+
 .cover-content {
     display: flex;
     flex-direction: row;
@@ -141,16 +144,179 @@ h2 {
     margin-right: auto;
     text-align: center;
 }
+
 .read-cover-books {
 
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
 }
+
 .read-cover-books img {
     width: 170px;
     height: 170px;
     margin-left: 13px;
     margin-right: 13px;
-    margin-top:13px;
+    margin-top: 13px;
+}
+
+.edit-block {
+    position: absolute;
+    width: 1531px;
+    height: 85vh;
+    margin-top: 4vh;
+    margin-left: 194px;
+    background: #D9D9D9;
+}
+.edit-block div {
+    margin-top: 40px;
+    margin-left: 40px;
+}
+
+
+.name-field {
+    width: 767px;
+    height: 54px;
+}
+
+.name-field label {
+
+    font-size: 30px;
+    line-height: 50px;
+}
+
+.name-field input {
+    width: 617px;
+    height: 54px;
+    border: 0 solid;
+    background: rgba(161, 165, 202, 0.5);
+    font-size: 30px;
+}
+
+.age-field {
+    width: 767px;
+    height: 54px;
+}
+
+.age-field label {
+
+    font-size: 30px;
+    line-height: 50px;
+}
+
+.age-field input {
+    width: 80px;
+    height: 54px;
+    border: 0 solid;
+    background: rgba(161, 165, 202, 0.5);
+    font-size: 30px;
+}
+
+.sex-field {
+    width: 767px;
+    height: 54px;
+    display: inline-block;
+
+}
+
+.sex-field label {
+    font-size: 30px;
+    line-height: 50px;
+}
+
+.sex-field select {
+    width: 140px;
+    height: 35px;
+    padding: 4px;
+    border-radius: 4px;
+
+    background: rgba(161, 165, 202, 0.8);
+    border: none;
+    outline: none;
+    display: inline-block;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+
+.region-field {
+    width: 767px;
+    height: 54px;
+}
+
+.region-field label {
+
+    font-size: 30px;
+    line-height: 50px;
+}
+
+.region-field input {
+    width: 230px;
+    height: 54px;
+    border: 0 solid;
+    background: rgba(161, 165, 202, 0.5);
+    font-size: 30px;
+}
+
+.likes_genre-field {
+    width: 767px;
+    display: flex;
+    flex-direction: column;
+}
+
+.likes_genre-field label {
+
+    font-size: 30px;
+}
+
+.likes_genre-field select {
+    background: rgba(161, 165, 202, 0.5);
+
+}
+
+.likes_genre-field select option {
+    padding: 6px;
+}
+
+
+.about_me-field {
+    width: 1209px;
+    height: 114px;
+    display: flex;
+    flex-direction: column;
+}
+
+.about_me-field label {
+
+    font-size: 30px;
+    line-height: 50px;
+}
+
+.about_me-field textarea {
+    width: 1209px;
+    height: 114px;
+    border: 0 solid;
+    background: rgba(161, 165, 202, 0.5);
+    font-size: 10px;
+}
+
+
+#edit-photo:hover {
+        cursor: pointer;
+    opacity: 1;
+}
+.avatar-form>input {
+    display: none;
+}
+.avatar-form label {
+
+    margin-top: 120px;
+    margin-left: 100px;
+    position: absolute;
+    opacity: 0;
+}
+.avatar-form label:hover {
+    opacity: 1;
 }
